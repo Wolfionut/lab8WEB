@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Image</title>
+</head>
+<body>
+    <h1>Select an Image</h1>
+    <form id="imageForm">
+        <label for="imageSelect">Choose an image:</label>
+        <select id="imageSelect">
+            <option value="image1.jpg">Image 1</option>
+            <option value="2.jpg">Image 2</option>
+            <option value="3.jpg">Image 3</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="imageContainer">
+        <img id="selectedImage" src="" alt="Selected Image" style="display: none;">
+    </div>
+
+    <script>
+        document.getElementById('imageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const imageName = document.getElementById('imageSelect').value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/get-image?name=${imageName}`, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const url = URL.createObjectURL(xhr.response);
+                    const img = document.getElementById('selectedImage');
+                    img.src = url;
+                    img.style.display = 'block';
+                } else {
+                    console.error('Error fetching the image:', xhr.statusText);
+                }
+            };
+
+            xhr.onerror = function() {
+                console.error('Request failed');
+            };
+
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
